@@ -2,29 +2,33 @@ package fx.model;
 
 import javafx.beans.property.*;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public class Person {
+
+    private static int idCounter = 0;
+    private final IntegerProperty id;
     private final StringProperty firstName;
     private final StringProperty lastName;
     private final StringProperty street;
     private final IntegerProperty postalCode;
     private final StringProperty city;
-    private final ObjectProperty<LocalDate> birthday;
+    private final ObjectProperty<Date> birthday;
 
     public Person() {
         this(null, null);
     }
 
     public Person(String firstName, String lastName) {
+        this.id = new SimpleIntegerProperty(idCounter++);
         this.firstName = new SimpleStringProperty(firstName);
         this.lastName = new SimpleStringProperty(lastName);
 
         // Какие-то фиктивные начальные данные для удобства тестирования.
         this.street = new SimpleStringProperty("какая-то улица");
-        this.postalCode = new SimpleIntegerProperty(1234);
+        this.postalCode = new SimpleIntegerProperty(123456);
         this.city = new SimpleStringProperty("какой-то город");
-        this.birthday = new SimpleObjectProperty<>(LocalDate.of(1999, 2, 21));
+        this.birthday = new SimpleObjectProperty<>(new Date());
     }
 
     public String getFirstName() {
@@ -87,15 +91,25 @@ public class Person {
         this.city.set(city);
     }
 
-    public LocalDate getBirthday() {
+    public Date getBirthday() {
         return birthday.get();
     }
 
-    public ObjectProperty<LocalDate> birthdayProperty() {
+    public ObjectProperty<Date> birthdayProperty() {
         return birthday;
     }
 
-    public void setBirthday(LocalDate birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday.set(birthday);
     }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id.get() +
+                ", firstName=" + firstName.get() +
+                ", lastName=" + lastName.get() +
+                '}';
+    }
+
 }
