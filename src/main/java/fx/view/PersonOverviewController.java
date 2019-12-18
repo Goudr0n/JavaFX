@@ -15,12 +15,12 @@ import java.text.SimpleDateFormat;
  */
 public class PersonOverviewController {
 
-    static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("dd.MM.yyyy");
-
     private Main mainApp;
 
     @FXML
     private TableView<Person> personTable;
+    @FXML
+    private TableColumn<Person, Number> idColumn;
     @FXML
     private TableColumn<Person, String> firstNameColumn;
     @FXML
@@ -41,7 +41,8 @@ public class PersonOverviewController {
 
     @FXML
     private void initialize() {
-        // Initialize the person table with the two columns.
+        // Initialize the person table with columns.
+        idColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty());
         firstNameColumn.setCellValueFactory(cellData -> cellData.getValue().firstNameProperty());
         lastNameColumn.setCellValueFactory(cellData -> cellData.getValue().lastNameProperty());
         /* Очищаем значения таблицы Person Details */
@@ -63,7 +64,7 @@ public class PersonOverviewController {
             streetLabel.setText(person.getStreet());
             postalCodeLabel.setText(Integer.toString(person.getPostalCode()));
             cityLabel.setText(person.getCity());
-            birthdayLabel.setText(DATE_FORMATTER.format(person.getBirthday()));
+            birthdayLabel.setText(Person.DATE_FORMATTER.format(person.getBirthday()));
         } else {
             firstNameLabel.setText("");
             lastNameLabel.setText("");

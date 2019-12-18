@@ -58,7 +58,7 @@ public class PersonEditDialogController {
         streetField.setText(person.getStreet());
         postalCodeField.setText(Integer.toString(person.getPostalCode()));
         cityField.setText(person.getCity());
-        birthdayField.setText(PersonOverviewController.DATE_FORMATTER.format(person.getBirthday()));
+        birthdayField.setText(Person.DATE_FORMATTER.format(person.getBirthday()));
         birthdayField.setPromptText("dd.mm.yyyy");
     }
 
@@ -81,7 +81,7 @@ public class PersonEditDialogController {
             person.setPostalCode(Integer.parseInt(postalCodeField.getText()));
             person.setCity(cityField.getText());
             try {
-                person.setBirthday(PersonOverviewController.DATE_FORMATTER.parse(birthdayField.getText()));
+                person.setBirthday(Person.DATE_FORMATTER.parse(birthdayField.getText()));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -135,7 +135,7 @@ public class PersonEditDialogController {
             errorMessage += "No valid birthday!\n";
         } else {
             try {
-                PersonOverviewController.DATE_FORMATTER.parse(birthdayField.getText());
+                Person.DATE_FORMATTER.parse(birthdayField.getText());
             } catch (ParseException e) {
                 errorMessage += "No valid birthday. Use the format dd.mm.yyyy!\n";
             }

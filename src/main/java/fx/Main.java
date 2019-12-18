@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
@@ -18,10 +19,13 @@ public class Main extends Application {
     private Stage primaryStage;
     private BorderPane rootLayout;
     private ObservableList<Person> personData = FXCollections.observableArrayList();
-
+    /* Пути к страницам */
     private static final String ROOT_LAYOUT_PATH = "/RootLayout.fxml";
     private static final String PERSON_SCENE_PATH = "/PersonOverview.fxml";
     private static final String PERSON_EDIT_SCENE_PATH = "/PersonEditDialog.fxml";
+    /* Url иконок stage */
+    private static final String PRIMARY_STAGE_ICON_URL = "file:src/main/resources/images/baseline_menu_book_black_18dp.png";
+    private static final String EDIT_DIALOG_ICON_URL = "file:src/main/resources/images/baseline_person_add_black_18dp.png";
 
     public Stage getPrimaryStage() {
         return primaryStage;
@@ -43,6 +47,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Persons App");
+        /* Иконка приложения */
+        this.primaryStage.getIcons().add(new Image(PRIMARY_STAGE_ICON_URL));
 
         initRootLayout();
         showPersonOverview();
@@ -108,6 +114,7 @@ public class Main extends Application {
             // Create the dialog Stage.
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Edit Person");
+            dialogStage.getIcons().add(new Image(EDIT_DIALOG_ICON_URL));
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(primaryStage);
             Scene scene = new Scene(editDialog);

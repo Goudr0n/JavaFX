@@ -2,9 +2,12 @@ package fx.model;
 
 import javafx.beans.property.*;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Person {
+
+    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("dd.MM.yyyy");
 
     private static int idCounter = 0;
     private final IntegerProperty id;
@@ -28,7 +31,19 @@ public class Person {
         this.street = new SimpleStringProperty("какая-то улица");
         this.postalCode = new SimpleIntegerProperty(123456);
         this.city = new SimpleStringProperty("какой-то город");
-        this.birthday = new SimpleObjectProperty<>(new Date());
+        this.birthday = new SimpleObjectProperty<>();
+    }
+
+    public int getId() {
+        return id.get();
+    }
+
+    public IntegerProperty idProperty() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id.set(id);
     }
 
     public String getFirstName() {
