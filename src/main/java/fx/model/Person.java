@@ -4,16 +4,23 @@ import javafx.beans.property.*;
 import util.XmlDateAdapter;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 public class Person {
 
     private static final Random RANDOM = new Random();
     private static final String DATE_DELIMITER = ".";
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(String.format("dd%1$sMM%1$syyyy", DATE_DELIMITER));
+
+    private static final String FIRST_NAMES_FILE_PATH = "src/main/resources/FirstNames";
+    private static final String LAST_NAMES_FILE_PATH = "src/main/resources/LastNames";
+    private static List<String> firstNames;
+    private static List<String> lastNames;
 
     private static int idCounter = 0;
     private final IntegerProperty id;
@@ -44,6 +51,40 @@ public class Person {
             e.printStackTrace();
         }
         this.birthday = new SimpleObjectProperty<>(birthday);
+    }
+
+    /**
+     * Создаёт заданного размера список случайных людей
+     *
+     * @param number количество требуемых людей
+     */
+    public static List<Person> generateRandomPersons(int number) {
+        List<Person> personList = new ArrayList<>();
+        try {
+            initNamesLists();
+            for (int i = 0; i < number; i++) {
+                String firstName = firstNames.get(RANDOM.nextInt(firstNames.size()));
+                String lastName = lastNames.get(RANDOM.nextInt(lastNames.size()));
+                Person person = new Person(firstName, lastName);
+                personList.add(person);
+            }
+        } catch (IOException e) {
+            System.err.println(">>> Files with names reading error");
+            e.printStackTrace();
+        }
+        return personList;
+    }
+
+    /**
+     * Загружает файлы имён и фамилий в списки
+     */
+    private static void initNamesLists() throws IOException {
+        File firstNamesFile = new File(FIRST_NAMES_FILE_PATH);
+        firstNames = Files.readAllLines(firstNamesFile.toPath());
+        System.out.println(FIRST_NAMES_FILE_PATH + " - " + firstNames.size() + " names found");
+        File lastNamesFile = new File(LAST_NAMES_FILE_PATH);
+        lastNames = Files.readAllLines(lastNamesFile.toPath());
+        System.out.println(LAST_NAMES_FILE_PATH + " - " + lastNames.size() + " names found");
     }
 
     private Date generateRandomBirthday() throws ParseException {
@@ -155,4 +196,21 @@ public class Person {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Person)) return false;
+        Person person = (Person) o;
+        return Objects.equals(firstName, person.firstName) &&
+                Objects.equals(lastName, person.lastName) &&
+                Objects.equals(street, person.street) &&
+                Objects.equals(postalCode, person.postalCode) &&
+                Objects.equals(city, person.city) &&
+                Objects.equals(birthday, person.birthday);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, street, postalCode, city, birthday);
+    }
 }

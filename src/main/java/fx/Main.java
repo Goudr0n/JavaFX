@@ -21,6 +21,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.prefs.Preferences;
 
 public class Main extends Application {
@@ -28,6 +31,7 @@ public class Main extends Application {
     private Stage primaryStage;
     private BorderPane rootLayout;
     private ObservableList<Person> personData = FXCollections.observableArrayList();
+    private static Properties properties = new Properties();
 
     /* Пути к страницам */
     private static final String ROOT_LAYOUT_PATH = "/RootLayout.fxml";
@@ -35,10 +39,9 @@ public class Main extends Application {
     private static final String PERSON_EDIT_SCENE_PATH = "/PersonEditDialog.fxml";
 
     /* Url иконок stage */
-    private static final String PRIMARY_STAGE_ICON_URL = "file:src/main/resources/images/" +
-            "baseline_menu_book_black_18dp.png";
-    private static final String EDIT_DIALOG_ICON_URL = "file:src/main/resources/images/" +
-            "baseline_person_add_black_18dp.png";
+    private static final String RESOURCES_PATH = "src/main/resources/";
+    private static final String PRIMARY_STAGE_ICON_URL = "file:" + RESOURCES_PATH + "images/baseline_menu_book_black_18dp.png";
+    private static final String EDIT_DIALOG_ICON_URL = "file:" + RESOURCES_PATH + "images/baseline_person_add_black_18dp.png";
 
     public Stage getPrimaryStage() {
         return primaryStage;
@@ -53,7 +56,15 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+        try {
+            InputStream inputStream = new FileInputStream("src/main/resources/config.properties");
+            properties.load(inputStream);
+
+            launch(args);
+        } catch (Exception e) {
+            System.err.println(">>> start exception");
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -64,8 +75,8 @@ public class Main extends Application {
         this.primaryStage.getIcons().add(new Image(PRIMARY_STAGE_ICON_URL));
 
         initRootLayout();
-        showPersonOverview();
         loadData();
+        showPersonOverview();
 
         this.primaryStage.show();
     }
@@ -87,13 +98,19 @@ public class Main extends Application {
     }
 
     private void loadData() {
-        // Try to load last opened person file.
-        File file = getPersonFilePath();
-        if (file != null) {
-            loadPersonDataFromFile(file);
+        if (Boolean.parseBoolean(properties.getProperty("data.random"))) {
+            int number = Integer.parseInt(properties.getProperty("data.random.number"));
+            personData.clear();
+            personData.addAll(Person.generateRandomPersons(number));
         } else {
-            System.out.println("No persons data found, generated artificially");
-            initPersonsData();
+            // Try to load last opened person file.
+            File file = getPersonFilePath();
+            if (file != null) {
+                loadPersonDataFromFile(file);
+            } else {
+                System.out.println("No persons data found, generated artificially");
+                initPersonsData();
+            }
         }
     }
 
