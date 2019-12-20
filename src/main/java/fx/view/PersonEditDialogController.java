@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 /**
  * Окно редактирования Person

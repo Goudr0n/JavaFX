@@ -1,13 +1,19 @@
 package fx.model;
 
 import javafx.beans.property.*;
+import util.XmlDateAdapter;
 
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 public class Person {
 
-    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("dd.MM.yyyy");
+    private static final Random RANDOM = new Random();
+    private static final String DATE_DELIMITER = ".";
+    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(String.format("dd%1$sMM%1$syyyy", DATE_DELIMITER));
 
     private static int idCounter = 0;
     private final IntegerProperty id;
@@ -31,7 +37,28 @@ public class Person {
         this.street = new SimpleStringProperty("какая-то улица");
         this.postalCode = new SimpleIntegerProperty(123456);
         this.city = new SimpleStringProperty("какой-то город");
-        this.birthday = new SimpleObjectProperty<>();
+        Date birthday = null;
+        try {
+            birthday = generateRandomBirthday();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        this.birthday = new SimpleObjectProperty<>(birthday);
+    }
+
+    private Date generateRandomBirthday() throws ParseException {
+        int month = RANDOM.nextInt(12) + 1;
+        String monthString = month < 10 ? "0" + month : String.valueOf(month);
+        int day;
+        /* Если февраль */
+        if (month == 2) {
+            day = RANDOM.nextInt(28) + 1;
+        } else {
+            day = RANDOM.nextInt(30) + 1;
+        }
+        String dayString = day < 10 ? "0" + day : String.valueOf(day);
+        int year = 1950 + RANDOM.nextInt(70);
+        return DATE_FORMATTER.parse(dayString + DATE_DELIMITER + monthString + DATE_DELIMITER + year);
     }
 
     public int getId() {
@@ -106,6 +133,7 @@ public class Person {
         this.city.set(city);
     }
 
+    @XmlJavaTypeAdapter(XmlDateAdapter.class)
     public Date getBirthday() {
         return birthday.get();
     }

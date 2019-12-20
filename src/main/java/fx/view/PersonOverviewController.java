@@ -8,8 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
-import java.text.SimpleDateFormat;
-
 /**
  * Окно просмотра Person
  */
@@ -64,7 +62,12 @@ public class PersonOverviewController {
             streetLabel.setText(person.getStreet());
             postalCodeLabel.setText(Integer.toString(person.getPostalCode()));
             cityLabel.setText(person.getCity());
-            birthdayLabel.setText(Person.DATE_FORMATTER.format(person.getBirthday()));
+            try {
+                birthdayLabel.setText(Person.DATE_FORMATTER.format(person.getBirthday()));
+            } catch (Exception e) {
+                System.err.println("Invalid date found: " + person.getBirthday());
+                birthdayLabel.setText("Invalid date");
+            }
         } else {
             firstNameLabel.setText("");
             lastNameLabel.setText("");
