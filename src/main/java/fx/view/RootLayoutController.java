@@ -15,12 +15,8 @@ import java.io.File;
  */
 public class RootLayoutController {
 
-    // Reference to the main application
     private Main mainApp;
 
-    /**
-     * Is called by the main application to give a reference back to itself.
-     */
     public void setMainApp(Main mainApp) {
         this.mainApp = mainApp;
     }
@@ -89,6 +85,14 @@ public class RootLayoutController {
             }
             mainApp.savePersonDataToFile(file);
         }
+    }
+
+    /**
+     * Opens the birthday statistics.
+     */
+    @FXML
+    private void handleShowBirthdayStatistics() {
+        mainApp.showBirthdayStatistics();
     }
 
     /**

@@ -2,6 +2,7 @@ package fx;
 
 import fx.model.Person;
 import fx.model.PersonListWrapper;
+import fx.view.BirthdayStatisticsController;
 import fx.view.PersonEditDialogController;
 import fx.view.PersonOverviewController;
 import fx.view.RootLayoutController;
@@ -37,11 +38,13 @@ public class Main extends Application {
     private static final String ROOT_LAYOUT_PATH = "/RootLayout.fxml";
     private static final String PERSON_SCENE_PATH = "/PersonOverview.fxml";
     private static final String PERSON_EDIT_SCENE_PATH = "/PersonEditDialog.fxml";
+    private static final String BIRTHDAY_STATS_SCENE_PATH = "/BirthdayStatistics.fxml";
 
     /* Url иконок stage */
     private static final String RESOURCES_PATH = "src/main/resources/";
     private static final String PRIMARY_STAGE_ICON_URL = "file:" + RESOURCES_PATH + "images/baseline_menu_book_black_18dp.png";
     private static final String EDIT_DIALOG_ICON_URL = "file:" + RESOURCES_PATH + "images/baseline_person_add_black_18dp.png";
+    private static final String BIRTHDAY_STATS_ICON_URL = "file:" + RESOURCES_PATH + "images/baseline_calendar_today_black_18dp.png";
 
     public Stage getPrimaryStage() {
         return primaryStage;
@@ -98,8 +101,8 @@ public class Main extends Application {
     }
 
     private void loadData() {
-        if (Boolean.parseBoolean(properties.getProperty("data.random"))) {
-            int number = Integer.parseInt(properties.getProperty("data.random.number"));
+        if (Boolean.parseBoolean(properties.getProperty("data.isRandom"))) {
+            int number = Integer.parseInt(properties.getProperty("data.isRandom.number"));
             personData.clear();
             personData.addAll(Person.generateRandomPersons(number));
         } else {
@@ -156,21 +159,21 @@ public class Main extends Application {
             AnchorPane editDialog = loader.load();
 
             // Create the dialog Stage.
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Edit Person");
-            dialogStage.getIcons().add(new Image(EDIT_DIALOG_ICON_URL));
-            dialogStage.initModality(Modality.WINDOW_MODAL);
-            dialogStage.initOwner(primaryStage);
+            Stage personEditDialogStage = new Stage();
+            personEditDialogStage.setTitle("Edit Person");
+            personEditDialogStage.getIcons().add(new Image(EDIT_DIALOG_ICON_URL));
+            personEditDialogStage.initModality(Modality.WINDOW_MODAL);
+            personEditDialogStage.initOwner(primaryStage);
             Scene scene = new Scene(editDialog);
-            dialogStage.setScene(scene);
+            personEditDialogStage.setScene(scene);
 
             // Set the person into the controller.
             PersonEditDialogController controller = loader.getController();
-            controller.setDialogStage(dialogStage);
+            controller.setDialogStage(personEditDialogStage);
             controller.setPerson(person);
 
             // Show the dialog and wait until the user closes it
-            dialogStage.showAndWait();
+            personEditDialogStage.showAndWait();
 
             return controller.isOkClicked();
         } catch (Exception e) {
@@ -260,5 +263,33 @@ public class Main extends Application {
         alert.setHeaderText(header);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    /**
+     * Opens a dialog to show birthday statistics.
+     */
+    public void showBirthdayStatistics() {
+        try {
+            // Load the fxml file and create a new stage for the popup.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource(BIRTHDAY_STATS_SCENE_PATH));
+            AnchorPane page = loader.load();
+            Stage BirthdayStatsDialogStage = new Stage();
+            BirthdayStatsDialogStage.setTitle("Birthday Statistics");
+            BirthdayStatsDialogStage.initModality(Modality.WINDOW_MODAL);
+            BirthdayStatsDialogStage.initOwner(primaryStage);
+            BirthdayStatsDialogStage.getIcons().add(new Image(BIRTHDAY_STATS_ICON_URL));
+            Scene scene = new Scene(page);
+            BirthdayStatsDialogStage.setScene(scene);
+
+            // Set the persons into the controller.
+            BirthdayStatisticsController controller = loader.getController();
+            controller.setPersonData(personData);
+
+            BirthdayStatsDialogStage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
