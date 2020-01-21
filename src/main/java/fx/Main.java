@@ -1,5 +1,6 @@
 package fx;
 
+import fx.model.Constants;
 import fx.model.Person;
 import fx.model.PersonListWrapper;
 import fx.view.BirthdayStatisticsController;
@@ -101,8 +102,8 @@ public class Main extends Application {
     }
 
     private void loadData() {
-        if (Boolean.parseBoolean(properties.getProperty("data.isRandom"))) {
-            int number = Integer.parseInt(properties.getProperty("data.isRandom.number"));
+        if (Boolean.parseBoolean(properties.getProperty(Constants.DATA_IS_RANDOM))) {
+            int number = Integer.parseInt(properties.getProperty(Constants.NUMBER_OF_RANDOM_DATA_RECORDS));
             personData.clear();
             personData.addAll(Person.generateRandomPersons(number));
         } else {
@@ -287,7 +288,6 @@ public class Main extends Application {
             controller.setPersonData(personData);
 
             BirthdayStatsDialogStage.show();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
